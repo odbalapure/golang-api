@@ -2,11 +2,13 @@ package main
 
 import (
 	"log"
+
+	"github.com/odbalapure/social/cmd/internal/env"
 )
 
 func main() {
 	cfg := config{
-		addr: ":8080",
+		addr: env.GetString("PORT", ":8080"),
 	}
 
 	app := &application{

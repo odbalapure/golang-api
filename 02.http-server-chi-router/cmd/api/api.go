@@ -17,11 +17,9 @@ type config struct {
 	addr string
 }
 
-// We could have used chi.Mux as a return type
+// We could have used "chi.Mux" as a return type
 // But internally it implements http.Handler interface
-// So we can return it as http.Handler to keep the implementation generic
-// func (app *application) mount() *chi.Mux {}
-
+// So we can keep the return type as "http.Handler" to keep the implementation generic
 func (app *application) mount() http.Handler {
 	// This is the default way to create a new "ServeMux"
 	// mux := http.NewServeMux()
@@ -33,8 +31,16 @@ func (app *application) mount() http.Handler {
 	r := chi.NewRouter()
 
 	// Middleware is a function that sits b/w request and response
+	r.Use(middleware.Recoverer)
 	// This middleware is used to log the HTTP request
 	r.Use(middleware.Logger)
+	r.Use(middleware.RequestID)
+	r.Use(middleware.RealIP)
+
+	// Set a timeout value on the request context (ctx), that will signal
+	// through ctx.Done() that the request has timed out and further
+	// processing should be stopped.
+	r.Use(middleware.Timeout(60 * time.Second))
 
 	// A simple chi route
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
