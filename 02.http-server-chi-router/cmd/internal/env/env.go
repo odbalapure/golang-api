@@ -1,7 +1,9 @@
 package env
 
 // READ MORE: https://direnv.net
-
+// Install: brew install direnv
+// Add to zshrc: eval "$(direnv hook zsh)"
+// Approve content: direnv allow
 import (
 	"os"
 	"strconv"
